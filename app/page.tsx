@@ -20,7 +20,7 @@ export default function Home() {
           far: 1000,
         }}
       >
-        <OrbitControls />
+        <OrbitControls enablePan={false} dampingFactor={0.1} />
         <ambientLight intensity={2.0} />
         <Logo />
       </Canvas>
