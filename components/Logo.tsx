@@ -2,7 +2,7 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Logo = () => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
@@ -10,7 +10,10 @@ export const Logo = () => {
     texture.repeat.set(4, 1);
   });
 
-  const textureProfile = useTexture("/profile.png");
+  const textureProfileDefault = useTexture("/profile.png");
+  const [textureProfile, setTextureProfile] = useState<THREE.Texture | null>(
+    textureProfileDefault
+  );
 
   const refGroup = useRef<THREE.Group | null>(null);
 
@@ -23,6 +26,40 @@ export const Logo = () => {
       refGroup.current!.rotation.z +=
         THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.005;
     }
+  };
+
+  const handleFileChange = (event: Event) => {
+    if (!(event.target instanceof HTMLInputElement) || !event.target.files)
+      return;
+
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (!e.target || typeof e.target.result !== "string") return;
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const newTexture = new THREE.Texture(img);
+        newTexture.needsUpdate = true;
+        setTextureProfile(newTexture);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleClick = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.style.display = "none";
+
+    fileInput.addEventListener("change", handleFileChange);
+    document.body.appendChild(fileInput);
+    fileInput.click();
+
+    fileInput.addEventListener("change", () => {
+      document.body.removeChild(fileInput);
+    });
   };
 
   useEffect(() => {
@@ -40,11 +77,7 @@ export const Logo = () => {
 
   return (
     <group ref={refGroup}>
-      <mesh
-        onClick={(e) => {
-          console.log("test");
-        }}
-      >
+      <mesh onClick={handleClick}>
         <circleGeometry args={[3, 32]} />
         <meshStandardMaterial map={textureProfile} side={2} />
       </mesh>
