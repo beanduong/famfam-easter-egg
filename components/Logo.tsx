@@ -20,11 +20,11 @@ export const Logo = () => {
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
       refGroup.current!.rotation.x +=
-        THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.005;
-      refGroup.current!.rotation.y +=
         THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.005;
-      refGroup.current!.rotation.z +=
+      refGroup.current!.rotation.y +=
         THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.005;
+      refGroup.current!.rotation.z +=
+        THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.005;
     }
   };
 
