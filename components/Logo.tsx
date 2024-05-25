@@ -24,11 +24,11 @@ export const Logo = () => {
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
       refGroup.current!.rotation.x +=
-        THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.01;
+        THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.01;
       refGroup.current!.rotation.y +=
         THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.01;
       refGroup.current!.rotation.z +=
-        THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.01;
+        THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.01;
     }
   };
 
@@ -47,6 +47,9 @@ export const Logo = () => {
 
   return (
     <group ref={refGroup}>
+      {/* <mesh>
+        <sphereGeometry args={[3, 64, 64]} />
+      </mesh> */}
       <mesh
         rotation={[
           THREE.MathUtils.degToRad(16),
