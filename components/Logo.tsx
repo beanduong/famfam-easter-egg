@@ -17,6 +17,8 @@ export const Logo = () => {
 
   const refGroup = useRef<THREE.Group | null>(null);
 
+  const fisheyeIntensity = 1.75;
+
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
       refGroup.current!.rotation.x +=
@@ -39,6 +41,7 @@ export const Logo = () => {
       const img = new Image();
       img.src = e.target.result;
       img.onload = () => {
+        // crop
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         const size = Math.min(img.width, img.height);
@@ -55,8 +58,46 @@ export const Logo = () => {
           size,
           size
         );
+
+        // Apply fisheye effect
+        const imageData = ctx!.getImageData(0, 0, size, size);
+        const data = imageData.data;
+        const fisheyeCanvas = document.createElement("canvas");
+        const fisheyeCtx = fisheyeCanvas.getContext("2d");
+        fisheyeCanvas.width = size;
+        fisheyeCanvas.height = size;
+        const fisheyeData = fisheyeCtx!.createImageData(size, size);
+        const fisheyeDataArr = fisheyeData.data;
+
+        const centerX = size / 2;
+        const centerY = size / 2;
+        const radius = size / 2;
+
+        for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < radius) {
+              const theta = Math.atan2(dy, dx);
+              const r = distance / radius;
+              const newR = Math.pow(r, fisheyeIntensity);
+              const newX = centerX + newR * radius * Math.cos(theta);
+              const newY = centerY + newR * radius * Math.sin(theta);
+              const srcIndex = (Math.floor(newY) * size + Math.floor(newX)) * 4;
+              const destIndex = (y * size + x) * 4;
+              fisheyeDataArr[destIndex] = data[srcIndex];
+              fisheyeDataArr[destIndex + 1] = data[srcIndex + 1];
+              fisheyeDataArr[destIndex + 2] = data[srcIndex + 2];
+              fisheyeDataArr[destIndex + 3] = data[srcIndex + 3];
+            }
+          }
+        }
+
+        fisheyeCtx!.putImageData(fisheyeData, 0, 0);
+
         const croppedImg = new Image();
-        croppedImg.src = canvas.toDataURL();
+        croppedImg.src = fisheyeCanvas.toDataURL();
         croppedImg.onload = () => {
           const newTexture = new THREE.Texture(croppedImg);
           newTexture.needsUpdate = true;
