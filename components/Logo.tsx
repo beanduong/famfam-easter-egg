@@ -39,9 +39,29 @@ export const Logo = () => {
       const img = new Image();
       img.src = e.target.result;
       img.onload = () => {
-        const newTexture = new THREE.Texture(img);
-        newTexture.needsUpdate = true;
-        setTextureProfile(newTexture);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const size = Math.min(img.width, img.height);
+        canvas.width = size;
+        canvas.height = size;
+        ctx!.drawImage(
+          img,
+          (img.width - size) / 2,
+          (img.height - size) / 2,
+          size,
+          size,
+          0,
+          0,
+          size,
+          size
+        );
+        const croppedImg = new Image();
+        croppedImg.src = canvas.toDataURL();
+        croppedImg.onload = () => {
+          const newTexture = new THREE.Texture(croppedImg);
+          newTexture.needsUpdate = true;
+          setTextureProfile(newTexture);
+        };
       };
     };
     reader.readAsDataURL(file);
