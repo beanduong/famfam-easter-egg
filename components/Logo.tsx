@@ -23,16 +23,12 @@ export const Logo = () => {
 
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
-      console.log(refGroup.current!.rotation);
-      refGroup.current!.rotation.x += THREE.MathUtils.degToRad(
-        e.rotationRate.beta!
-      );
-      refGroup.current!.rotation.y += THREE.MathUtils.degToRad(
-        e.rotationRate.gamma!
-      );
-      refGroup.current!.rotation.z += THREE.MathUtils.degToRad(
-        e.rotationRate.alpha!
-      );
+      refGroup.current!.rotation.x +=
+        THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.01;
+      refGroup.current!.rotation.y +=
+        THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.01;
+      refGroup.current!.rotation.z +=
+        THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.01;
     }
   };
 
