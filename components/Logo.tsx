@@ -19,47 +19,34 @@ export const Logo = () => {
   const refGroup = useRef<THREE.Group | null>(null);
 
   const refInitialOrientation = useRef<Orientation | null>(null);
-  const [orientation, setOrientation] = useState<Orientation | null>(null);
+  // const [orientation, setOrientation] = useState<Orientation | null>(null);
 
-  const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
-    if (e.alpha && e.beta && e.gamma) {
-      if (refInitialOrientation.current === null) {
-        console.log("set");
-        refInitialOrientation.current = {
-          alpha: e.alpha,
-          beta: e.beta,
-          gamma: e.gamma,
-        };
-      }
-      setOrientation({
-        alpha: e.alpha,
-        beta: e.beta,
-        gamma: e.gamma,
-      });
+  const handleMotionOrientation = (e: DeviceMotionEvent) => {
+    if (refGroup.current && e.rotationRate) {
+      console.log(refGroup.current!.rotation);
+      refGroup.current!.rotation.x += THREE.MathUtils.degToRad(
+        e.rotationRate.beta!
+      );
+      refGroup.current!.rotation.y += THREE.MathUtils.degToRad(
+        e.rotationRate.gamma!
+      );
+      refGroup.current!.rotation.z += THREE.MathUtils.degToRad(
+        e.rotationRate.alpha!
+      );
     }
   };
 
   useEffect(() => {
-    window.addEventListener("deviceorientation", handleDeviceOrientation, true);
+    window.addEventListener("devicemotion", handleMotionOrientation, true);
 
     return () => {
-      window.removeEventListener("deviceorientation", handleDeviceOrientation);
+      window.removeEventListener("devicemotion", handleMotionOrientation);
     };
   }, []);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     texture.offset.x = t * 0.15;
-
-    if (refGroup.current && refInitialOrientation.current && orientation) {
-      const alpha = refInitialOrientation.current.alpha - orientation.alpha;
-      const beta = refInitialOrientation.current.beta - orientation.beta;
-      const gamma = refInitialOrientation.current.gamma - orientation.gamma;
-
-      refGroup.current.rotation.x = THREE.MathUtils.degToRad(-beta * 0.2);
-      refGroup.current.rotation.y = THREE.MathUtils.degToRad(gamma * 0.2);
-      refGroup.current.rotation.z = THREE.MathUtils.degToRad(alpha * 0.2);
-    }
   });
 
   return (
