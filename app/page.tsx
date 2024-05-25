@@ -1,31 +1,14 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import { DeviceOrientationControls, OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import { Logo } from "@/components/Logo";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 
 export default function Home() {
-  const refDebug = useRef<HTMLSpanElement | null>(null);
-
-  const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
-    console.log(e);
-    refDebug.current!.innerText = e.alpha + " " + e.beta + " " + e.gamma;
-  };
-
-  useEffect(() => {
-    window.addEventListener("deviceorientation", handleDeviceOrientation, true);
-
-    return () => {
-      window.removeEventListener("deviceorientation", handleDeviceOrientation);
-    };
-  }, []);
-
   return (
     <main className="absolute inset-0">
-      <div className="absolute inset-0">
-        <span ref={refDebug}>Test</span>
-      </div>
       <Canvas
         camera={{
           position: [0, 0, 10],
@@ -35,11 +18,6 @@ export default function Home() {
         }}
       >
         <OrbitControls />
-        {/* <DeviceOrientationControls
-          onChange={(e) => {
-            refDebug.current!.innerText = JSON.stringify(e);
-          }}
-        /> */}
         <ambientLight intensity={2.0} />
         <Logo />
       </Canvas>
