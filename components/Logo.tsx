@@ -40,9 +40,17 @@ export const Logo = () => {
 
   return (
     <group ref={refGroup}>
-      <mesh>
-        <circleGeometry args={[3, 64, 64]} />
+      <mesh
+        onClick={(e) => {
+          console.log("test");
+        }}
+      >
+        <circleGeometry args={[3, 32]} />
         <meshStandardMaterial map={textureProfile} side={2} />
+      </mesh>
+      <mesh>
+        <ringGeometry args={[3, 3.05, 64, 0]} />
+        <lineBasicMaterial color={"#000000"} side={2} />
       </mesh>
       <mesh
         rotation={[

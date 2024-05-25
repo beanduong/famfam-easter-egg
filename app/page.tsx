@@ -6,11 +6,16 @@ import { Logo } from "@/components/Logo";
 
 export default function Home() {
   return (
-    <main className="absolute inset-0">
+    <main
+      className="absolute inset-0 bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/cloud.png')",
+      }}
+    >
       <Canvas
         camera={{
-          position: [0, 0, 10],
-          fov: 75,
+          position: [0, 0, 14],
+          fov: 100,
           near: 0.1,
           far: 1000,
         }}
