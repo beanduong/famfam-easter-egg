@@ -51,6 +51,7 @@ export const Logo = () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
+    fileInput.capture = "user";
     fileInput.style.display = "none";
 
     fileInput.addEventListener("change", handleFileChange);
