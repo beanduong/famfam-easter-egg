@@ -14,7 +14,7 @@ export default function Home() {
     >
       <Canvas
         camera={{
-          position: [0, 0, 14],
+          position: [0, 0, 12],
           fov: 100,
           near: 0.1,
           far: 1000,
