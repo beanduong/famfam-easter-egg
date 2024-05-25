@@ -11,7 +11,7 @@ export const Logo = () => {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    texture.offset.x = t * 0.1;
+    texture.offset.x = t * 0.15;
   });
 
   return (
@@ -22,7 +22,7 @@ export const Logo = () => {
         THREE.MathUtils.degToRad(-25),
       ]}
     >
-      <cylinderGeometry args={[4, 4, 1, 32, 1, true]} />
+      <cylinderGeometry args={[4, 4, 1, 64, 1, true]} />
       <meshStandardMaterial map={texture} side={2} transparent={true} />
     </mesh>
   );
