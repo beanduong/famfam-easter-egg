@@ -1,10 +1,8 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Logo } from "@/components/Logo";
-import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 
 export default function Home() {
   return (
