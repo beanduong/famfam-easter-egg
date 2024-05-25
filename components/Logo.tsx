@@ -56,9 +56,9 @@ export const Logo = () => {
       const beta = refInitialOrientation.current.beta - orientation.beta;
       const gamma = refInitialOrientation.current.gamma - orientation.gamma;
 
-      refGroup.current.rotation.x = THREE.MathUtils.degToRad(beta);
-      refGroup.current.rotation.y = THREE.MathUtils.degToRad(gamma);
-      refGroup.current.rotation.z = THREE.MathUtils.degToRad(alpha);
+      refGroup.current.rotation.x = THREE.MathUtils.degToRad(-beta * 0.2);
+      refGroup.current.rotation.y = THREE.MathUtils.degToRad(gamma * 0.2);
+      refGroup.current.rotation.z = THREE.MathUtils.degToRad(alpha * 0.2);
     }
   });
 
