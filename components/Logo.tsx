@@ -2,33 +2,26 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
-
-type Orientation = {
-  alpha: number;
-  beta: number;
-  gamma: number;
-};
+import { useEffect, useRef } from "react";
 
 export const Logo = () => {
-  const texture = useTexture("/famfam.png", (texture) => {
+  const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(4, 1);
   });
 
-  const refGroup = useRef<THREE.Group | null>(null);
+  const textureProfile = useTexture("/profile.png");
 
-  const refInitialOrientation = useRef<Orientation | null>(null);
-  // const [orientation, setOrientation] = useState<Orientation | null>(null);
+  const refGroup = useRef<THREE.Group | null>(null);
 
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
       refGroup.current!.rotation.x +=
-        THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.01;
+        THREE.MathUtils.degToRad(e.rotationRate.alpha!) * 0.005;
       refGroup.current!.rotation.y +=
-        THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.01;
+        THREE.MathUtils.degToRad(e.rotationRate.gamma!) * 0.005;
       refGroup.current!.rotation.z +=
-        THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.01;
+        THREE.MathUtils.degToRad(e.rotationRate.beta!) * 0.005;
     }
   };
 
@@ -42,14 +35,15 @@ export const Logo = () => {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    texture.offset.x = t * 0.15;
+    textureLogo.offset.x = t * 0.15;
   });
 
   return (
     <group ref={refGroup}>
-      {/* <mesh>
-        <sphereGeometry args={[3, 64, 64]} />
-      </mesh> */}
+      <mesh>
+        <circleGeometry args={[3, 64, 64]} />
+        <meshStandardMaterial map={textureProfile} side={2} />
+      </mesh>
       <mesh
         rotation={[
           THREE.MathUtils.degToRad(16),
@@ -58,7 +52,7 @@ export const Logo = () => {
         ]}
       >
         <cylinderGeometry args={[4, 4, 1, 64, 1, true]} />
-        <meshStandardMaterial map={texture} side={2} transparent={true} />
+        <meshStandardMaterial map={textureLogo} side={2} transparent={true} />
       </mesh>
     </group>
   );
