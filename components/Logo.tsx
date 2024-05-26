@@ -4,7 +4,11 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 
-export const Logo = () => {
+export const Logo = ({
+  fisheyeIntensity = 1.2,
+  noiseIntensity = 30,
+  saturateIntensity = 1.2,
+}) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(4, 1);
@@ -16,8 +20,6 @@ export const Logo = () => {
   );
 
   const refGroup = useRef<THREE.Group | null>(null);
-
-  const fisheyeIntensity = 1.2;
 
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
@@ -62,11 +64,7 @@ export const Logo = () => {
         // Apply fisheye effect
         const imageData = ctx!.getImageData(0, 0, size, size);
         const data = imageData.data;
-        const fisheyeCanvas = document.createElement("canvas");
-        const fisheyeCtx = fisheyeCanvas.getContext("2d");
-        fisheyeCanvas.width = size;
-        fisheyeCanvas.height = size;
-        const fisheyeData = fisheyeCtx!.createImageData(size, size);
+        const fisheyeData = ctx!.createImageData(size, size);
         const fisheyeDataArr = fisheyeData.data;
 
         const centerX = size / 2;
@@ -94,10 +92,45 @@ export const Logo = () => {
           }
         }
 
-        fisheyeCtx!.putImageData(fisheyeData, 0, 0);
+        ctx!.putImageData(fisheyeData, 0, 0);
+
+        // Increase saturation and apply old-school style
+        const imageDataAfterFisheye = ctx!.getImageData(0, 0, size, size);
+        const dataAfterFisheye = imageDataAfterFisheye.data;
+
+        for (let i = 0; i < dataAfterFisheye.length; i += 4) {
+          // Increase saturation
+          const r = dataAfterFisheye[i];
+          const g = dataAfterFisheye[i + 1];
+          const b = dataAfterFisheye[i + 2];
+
+          const avg = (r + g + b) / 3;
+          dataAfterFisheye[i] = Math.min(255, r * saturateIntensity); // Red channel
+          dataAfterFisheye[i + 1] = Math.min(255, g * saturateIntensity); // Green channel
+          dataAfterFisheye[i + 2] = Math.min(255, b * saturateIntensity); // Blue channel
+
+          // Apply noise
+          const noiseR = (Math.random() - 0.5) * noiseIntensity;
+          const noiseG = (Math.random() - 0.5) * noiseIntensity;
+          const noiseB = (Math.random() - 0.5) * noiseIntensity;
+          dataAfterFisheye[i] = Math.min(
+            255,
+            Math.max(0, dataAfterFisheye[i] + noiseR)
+          );
+          dataAfterFisheye[i + 1] = Math.min(
+            255,
+            Math.max(0, dataAfterFisheye[i + 1] + noiseG)
+          );
+          dataAfterFisheye[i + 2] = Math.min(
+            255,
+            Math.max(0, dataAfterFisheye[i + 2] + noiseB)
+          );
+        }
+
+        ctx!.putImageData(imageDataAfterFisheye, 0, 0);
 
         const croppedImg = new Image();
-        croppedImg.src = fisheyeCanvas.toDataURL();
+        croppedImg.src = canvas.toDataURL();
         croppedImg.onload = () => {
           const newTexture = new THREE.Texture(croppedImg);
           newTexture.needsUpdate = true;
@@ -125,6 +158,24 @@ export const Logo = () => {
   };
 
   useEffect(() => {
+    const requestPermission = async () => {
+      if (typeof (DeviceMotionEvent as any).requestPermission === "function") {
+        try {
+          const permission = await (
+            DeviceMotionEvent as any
+          ).requestPermission();
+          if (permission === "granted") {
+            window.addEventListener("devicemotion", handleMotionOrientation);
+          }
+        } catch (error) {
+          console.error("Permission request denied", error);
+        }
+      } else {
+        window.addEventListener("devicemotion", handleMotionOrientation);
+      }
+    };
+
+    requestPermission();
     window.addEventListener("devicemotion", handleMotionOrientation, true);
 
     return () => {
