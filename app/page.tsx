@@ -14,6 +14,9 @@ export default function Home() {
         sizes="100vw"
         alt="clouds"
         className="object-cover"
+        placeholder="blur"
+        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNMWPTiPwAGPwLrhTF0EgAAAABJRU5ErkJggg==
+        "
       />
       <Canvas
         camera={{
