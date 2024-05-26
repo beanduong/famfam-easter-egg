@@ -17,7 +17,7 @@ export const Logo = () => {
 
   const refGroup = useRef<THREE.Group | null>(null);
 
-  const fisheyeIntensity = 1.75;
+  const fisheyeIntensity = 1.2;
 
   const handleMotionOrientation = (e: DeviceMotionEvent) => {
     if (refGroup.current && e.rotationRate) {
