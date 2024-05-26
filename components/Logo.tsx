@@ -8,6 +8,7 @@ export const Logo = ({
   fisheyeIntensity = 1.2,
   fisheyeKnee = 0.5,
   noiseIntensity = 30,
+  resolution = 128,
   saturateIntensity = 1.2,
 }) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
@@ -44,12 +45,12 @@ export const Logo = ({
       const img = new Image();
       img.src = e.target.result;
       img.onload = () => {
-        // crop
+        // Crop and resize image to specified resolution
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         const size = Math.min(img.width, img.height);
-        canvas.width = size;
-        canvas.height = size;
+        canvas.width = resolution;
+        canvas.height = resolution;
         ctx!.drawImage(
           img,
           (img.width - size) / 2,
@@ -58,22 +59,22 @@ export const Logo = ({
           size,
           0,
           0,
-          size,
-          size
+          resolution,
+          resolution
         );
 
         // Apply fisheye effect with fine-tuning
-        const imageData = ctx!.getImageData(0, 0, size, size);
+        const imageData = ctx!.getImageData(0, 0, resolution, resolution);
         const data = imageData.data;
-        const fisheyeData = ctx!.createImageData(size, size);
+        const fisheyeData = ctx!.createImageData(resolution, resolution);
         const fisheyeDataArr = fisheyeData.data;
 
-        const centerX = size / 2;
-        const centerY = size / 2;
-        const radius = size / 2;
+        const centerX = resolution / 2;
+        const centerY = resolution / 2;
+        const radius = resolution / 2;
 
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
+        for (let y = 0; y < resolution; y++) {
+          for (let x = 0; x < resolution; x++) {
             const dx = x - centerX;
             const dy = y - centerY;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -84,8 +85,9 @@ export const Logo = ({
                 Math.pow(r, fisheyeKnee) * Math.pow(r, fisheyeIntensity);
               const newX = centerX + newR * radius * Math.cos(theta);
               const newY = centerY + newR * radius * Math.sin(theta);
-              const srcIndex = (Math.floor(newY) * size + Math.floor(newX)) * 4;
-              const destIndex = (y * size + x) * 4;
+              const srcIndex =
+                (Math.floor(newY) * resolution + Math.floor(newX)) * 4;
+              const destIndex = (y * resolution + x) * 4;
               fisheyeDataArr[destIndex] = data[srcIndex];
               fisheyeDataArr[destIndex + 1] = data[srcIndex + 1];
               fisheyeDataArr[destIndex + 2] = data[srcIndex + 2];
@@ -96,8 +98,13 @@ export const Logo = ({
 
         ctx!.putImageData(fisheyeData, 0, 0);
 
-        // Increase saturation and apply old-school style
-        const imageDataAfterFisheye = ctx!.getImageData(0, 0, size, size);
+        // Increase saturation and apply noise
+        const imageDataAfterFisheye = ctx!.getImageData(
+          0,
+          0,
+          resolution,
+          resolution
+        );
         const dataAfterFisheye = imageDataAfterFisheye.data;
 
         for (let i = 0; i < dataAfterFisheye.length; i += 4) {
@@ -106,26 +113,23 @@ export const Logo = ({
           const g = dataAfterFisheye[i + 1];
           const b = dataAfterFisheye[i + 2];
 
-          const avg = (r + g + b) / 3;
           dataAfterFisheye[i] = Math.min(255, r * saturateIntensity); // Red channel
           dataAfterFisheye[i + 1] = Math.min(255, g * saturateIntensity); // Green channel
           dataAfterFisheye[i + 2] = Math.min(255, b * saturateIntensity); // Blue channel
 
           // Apply noise
-          const noiseR = (Math.random() - 0.5) * noiseIntensity;
-          const noiseG = (Math.random() - 0.5) * noiseIntensity;
-          const noiseB = (Math.random() - 0.5) * noiseIntensity;
+          const noise = (Math.random() - 0.5) * noiseIntensity;
           dataAfterFisheye[i] = Math.min(
             255,
-            Math.max(0, dataAfterFisheye[i] + noiseR)
+            Math.max(0, dataAfterFisheye[i] + noise)
           );
           dataAfterFisheye[i + 1] = Math.min(
             255,
-            Math.max(0, dataAfterFisheye[i + 1] + noiseG)
+            Math.max(0, dataAfterFisheye[i + 1] + noise)
           );
           dataAfterFisheye[i + 2] = Math.min(
             255,
-            Math.max(0, dataAfterFisheye[i + 2] + noiseB)
+            Math.max(0, dataAfterFisheye[i + 2] + noise)
           );
         }
 
