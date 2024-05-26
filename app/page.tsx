@@ -26,7 +26,8 @@ export default function Home() {
         <OrbitControls enablePan={false} dampingFactor={0.01} rotateSpeed={5} />
         <ambientLight intensity={2.0} />
         <Logo
-          fisheyeIntensity={1.2}
+          fisheyeIntensity={0.6}
+          fisheyeKnee={0.9}
           noiseIntensity={20}
           saturateIntensity={1.5}
         />

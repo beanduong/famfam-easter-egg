@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 export const Logo = ({
   fisheyeIntensity = 1.2,
+  fisheyeKnee = 0.5,
   noiseIntensity = 30,
   saturateIntensity = 1.2,
 }) => {
@@ -61,7 +62,7 @@ export const Logo = ({
           size
         );
 
-        // Apply fisheye effect
+        // Apply fisheye effect with fine-tuning
         const imageData = ctx!.getImageData(0, 0, size, size);
         const data = imageData.data;
         const fisheyeData = ctx!.createImageData(size, size);
@@ -79,7 +80,8 @@ export const Logo = ({
             if (distance < radius) {
               const theta = Math.atan2(dy, dx);
               const r = distance / radius;
-              const newR = Math.pow(r, fisheyeIntensity);
+              const newR =
+                Math.pow(r, fisheyeKnee) * Math.pow(r, fisheyeIntensity);
               const newX = centerX + newR * radius * Math.cos(theta);
               const newY = centerY + newR * radius * Math.sin(theta);
               const srcIndex = (Math.floor(newY) * size + Math.floor(newX)) * 4;
