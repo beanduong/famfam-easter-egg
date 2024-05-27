@@ -1,5 +1,5 @@
 "use client";
-import { useTexture } from "@react-three/drei";
+import { useCubeTexture, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -10,12 +10,21 @@ export const Logo = ({
   noiseIntensity = 30,
   resolution = 128,
   saturateIntensity = 1.2,
+  chrome = false,
 }) => {
   // Load textures
   const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(4, 1);
   });
+  const textureLogoMask = useTexture("/famfam-mask.png", (texture) => {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.repeat.set(4, 1);
+  });
+  const textureEnvironment = useCubeTexture(
+    ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
+    { path: "/env/" }
+  );
 
   const textureProfileDefault = useTexture("/profile.png");
   const [textureProfile, setTextureProfile] = useState(textureProfileDefault);
@@ -209,6 +218,7 @@ export const Logo = ({
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     textureLogo.offset.x = t * 0.15;
+    textureLogoMask.offset.x = t * 0.15;
   });
 
   return (
@@ -229,11 +239,26 @@ export const Logo = ({
         ]}
       >
         <cylinderGeometry args={[4, 4, 1, 64, 1, true]} />
-        <meshStandardMaterial
-          map={textureLogo}
-          side={THREE.DoubleSide}
-          transparent
-        />
+        {chrome ? (
+          <meshStandardMaterial
+            metalness={1}
+            roughness={0}
+            envMap={textureEnvironment}
+            envMapIntensity={1}
+            envMapRotation={
+              new THREE.Euler(0, THREE.MathUtils.degToRad(180), 0)
+            }
+            alphaMap={textureLogoMask}
+            side={THREE.DoubleSide}
+            transparent
+          />
+        ) : (
+          <meshStandardMaterial
+            map={textureLogo}
+            side={THREE.DoubleSide}
+            transparent
+          />
+        )}
       </mesh>
     </group>
   );

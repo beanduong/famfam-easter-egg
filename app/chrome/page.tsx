@@ -34,6 +34,7 @@ export default function Home() {
           noiseIntensity={30}
           saturateIntensity={1.2}
           resolution={500}
+          chrome={true}
         />
       </Canvas>
     </main>
