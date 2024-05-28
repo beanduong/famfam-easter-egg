@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       animation: {
-        diagonal: "diagonal 5s linear infinite",
+        diagonal: "diagonal 10s linear infinite",
       },
       keyframes: {
         diagonal: {
