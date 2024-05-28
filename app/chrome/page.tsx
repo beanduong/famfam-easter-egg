@@ -2,21 +2,16 @@
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Logo } from "@/components/Logo";
-import Image from "next/image";
+import { LogoProfile } from "@/components/LogoProfile";
 
 export default function Home() {
   return (
     <main className="absolute inset-0">
-      <Image
-        src="/cloud.png"
-        fill
-        sizes="100vw"
-        alt="clouds"
-        className="object-cover"
-        placeholder="blur"
-        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNMWPTiPwAGPwLrhTF0EgAAAABJRU5ErkJggg==
-        "
+      <div
+        className="absolute inset-0 animate-diagonal"
+        style={{
+          background: "url('/clouds.png') repeat",
+        }}
       />
       <Canvas
         camera={{
@@ -28,13 +23,13 @@ export default function Home() {
       >
         <OrbitControls enablePan={false} dampingFactor={0.01} rotateSpeed={5} />
         <ambientLight intensity={2.0} />
-        <Logo
+        <LogoProfile
           fisheyeIntensity={0.2}
           fisheyeKnee={0.8}
           noiseIntensity={30}
           saturateIntensity={1.2}
           resolution={500}
-          chrome={true}
+          chrome
         />
       </Canvas>
     </main>

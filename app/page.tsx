@@ -23,13 +23,7 @@ export default function Home() {
       >
         <OrbitControls enablePan={false} dampingFactor={0.01} rotateSpeed={5} />
         <ambientLight intensity={2.0} />
-        <Logo
-          fisheyeIntensity={0.2}
-          fisheyeKnee={0.8}
-          noiseIntensity={30}
-          saturateIntensity={1.2}
-          resolution={500}
-        />
+        <Logo />
       </Canvas>
     </main>
   );
