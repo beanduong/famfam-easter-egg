@@ -1,8 +1,8 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import { Logo } from "@/components/Logo";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,10 +21,38 @@ export default function Home() {
           far: 1000,
         }}
       >
-        <OrbitControls enablePan={false} dampingFactor={0.01} rotateSpeed={5} />
         <ambientLight intensity={2.0} />
-        <Logo />
+        <Logo radiusRing={4} radiusInner={3.9} />
       </Canvas>
+      <div className="absolute bottom-8 inset-x-0 flex justify-around">
+        <ul className="flex gap-8">
+          <li>
+            <NavLink href="/imprint">Imprint</NavLink>
+          </li>
+          <li>
+            <NavLink href="/privacy-policy">Privacy Policy</NavLink>
+          </li>
+          <li>
+            <NavLink href="/terms-of-service">Terms of Service</NavLink>
+          </li>
+          <li>
+            <NavLink href="mailto:hello@famfam.app">Contact</NavLink>
+          </li>
+        </ul>
+      </div>
     </main>
   );
 }
+
+const NavLink = ({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) => (
+  <Link href={href} className="relative">
+    <span className="uppercase font-bold">{children}</span>
+    <span className="absolute inset-x-0 -bottom-1 h-px bg-black" />
+  </Link>
+);
