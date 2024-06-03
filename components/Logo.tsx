@@ -2,7 +2,7 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { motion } from "framer-motion-3d";
 
 export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
@@ -12,17 +12,25 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
   const textureMatisse = useTexture("/matisse.png");
   const textureWorld = useTexture("/world.png");
 
-  const refCircle = useRef<THREE.Group>(null);
-
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     textureLogo.offset.x = t * 0.15;
-    refCircle.current!.rotation.y = t * 0.8;
   });
 
   return (
     <group>
-      <group ref={refCircle}>
+      <motion.group
+        initial={{ rotateY: Math.PI / 2 }}
+        animate={{
+          rotateY: Math.PI * 2 + Math.PI / 2,
+          transition: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 1,
+          },
+        }}
+      >
         <mesh>
           <circleGeometry args={[radiusInner, 64]} />
           <meshStandardMaterial
@@ -39,8 +47,13 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
             transparent
           />
         </mesh>
-      </group>
-      <mesh
+      </motion.group>
+      <motion.mesh
+        initial={{ scale: 4 }}
+        animate={{
+          scale: 1,
+          transition: { duration: 2, ease: [0, 0.65, 0, 1] },
+        }}
         rotation={[
           THREE.MathUtils.degToRad(16),
           0,
@@ -48,12 +61,14 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
         ]}
       >
         <cylinderGeometry args={[radiusRing, radiusRing, 1, 64, 1, true]} />
-        <meshStandardMaterial
+        <motion.meshStandardMaterial
           map={textureLogo}
           side={THREE.DoubleSide}
           transparent
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 2, delay: 0.5 } }}
         />
-      </mesh>
+      </motion.mesh>
     </group>
   );
 };

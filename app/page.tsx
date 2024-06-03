@@ -14,7 +14,6 @@ export default function Home() {
           background: "url('/clouds.png') repeat",
         }}
       />
-
       <Canvas
         camera={{
           position: [0, 0, 12],
