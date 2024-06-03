@@ -27,8 +27,8 @@ export default function Home() {
         <Logo radiusRing={4} radiusInner={3.9} />
       </Canvas>
 
-      <div className="absolute bottom-8 inset-x-0 flex justify-around">
-        <ul className="flex gap-8">
+      <div className="absolute bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 flex md:justify-center">
+        <ul className="flex gap-2 md:gap-8 md:flex-row flex-col">
           <li>
             <NavLink href="/legal-notice">Legal Notice</NavLink>
           </li>
@@ -55,7 +55,7 @@ const NavLink = ({
   children: React.ReactNode;
 }) => (
   <Link href={href} className="relative">
-    <span className="uppercase font-bold">{children}</span>
-    <span className="absolute inset-x-0 -bottom-1 h-px bg-black" />
+    <span className="uppercase font-bold text-xs">{children}</span>
+    <span className="absolute inset-x-0 bottom-0 h-px bg-black" />
   </Link>
 );
