@@ -1,8 +1,11 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
+import { OrbitControls } from "@react-three/drei";
+import { Vector3 } from "three";
+import { useRef } from "react";
 
 export default function Home() {
   return (
@@ -13,6 +16,7 @@ export default function Home() {
           background: "url('/clouds.png') repeat",
         }}
       />
+
       <Canvas
         camera={{
           position: [0, 0, 12],
@@ -21,9 +25,11 @@ export default function Home() {
           far: 1000,
         }}
       >
+        <CameraController />
         <ambientLight intensity={2.0} />
         <Logo radiusRing={4} radiusInner={3.9} />
       </Canvas>
+
       <div className="absolute bottom-8 inset-x-0 flex justify-around">
         <ul className="flex gap-8">
           <li>
@@ -43,6 +49,37 @@ export default function Home() {
     </main>
   );
 }
+
+const CameraController = () => {
+  const positionDefault = useRef(new Vector3(0, 0, 12));
+  const refOrbitControls = useRef<any>(null);
+  const snapping = useRef<boolean>(false);
+
+  const handleEnd = () => {
+    snapping.current = true;
+  };
+
+  useFrame(() => {
+    if (refOrbitControls.current && snapping.current) {
+      const currentPosition = refOrbitControls.current.object.position;
+      currentPosition.lerp(positionDefault.current, 0.1);
+      if (currentPosition.distanceTo(positionDefault.current) < 0.01) {
+        currentPosition.copy(positionDefault.current);
+        snapping.current = false;
+      }
+      refOrbitControls.current.update();
+    }
+  });
+
+  return (
+    <OrbitControls
+      ref={refOrbitControls}
+      onEnd={handleEnd}
+      enablePan={false}
+      enableZoom={false}
+    />
+  );
+};
 
 const NavLink = ({
   href,
