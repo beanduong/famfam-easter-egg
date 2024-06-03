@@ -1,11 +1,9 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
-import { OrbitControls } from "@react-three/drei";
-import { Vector3 } from "three";
-import { useRef } from "react";
+import { CameraController } from "@/components/CameraController";
 
 export default function Home() {
   return (
@@ -49,37 +47,6 @@ export default function Home() {
     </main>
   );
 }
-
-const CameraController = () => {
-  const positionDefault = useRef(new Vector3(0, 0, 12));
-  const refOrbitControls = useRef<any>(null);
-  const snapping = useRef<boolean>(false);
-
-  const handleEnd = () => {
-    snapping.current = true;
-  };
-
-  useFrame(() => {
-    if (refOrbitControls.current && snapping.current) {
-      const currentPosition = refOrbitControls.current.object.position;
-      currentPosition.lerp(positionDefault.current, 0.1);
-      if (currentPosition.distanceTo(positionDefault.current) < 0.01) {
-        currentPosition.copy(positionDefault.current);
-        snapping.current = false;
-      }
-      refOrbitControls.current.update();
-    }
-  });
-
-  return (
-    <OrbitControls
-      ref={refOrbitControls}
-      onEnd={handleEnd}
-      enablePan={false}
-      enableZoom={false}
-    />
-  );
-};
 
 const NavLink = ({
   href,
