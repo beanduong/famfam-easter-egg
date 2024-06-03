@@ -24,7 +24,7 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
         animate={{
           rotateY: Math.PI * 2 + Math.PI / 2,
           transition: {
-            duration: 4,
+            duration: 8,
             repeat: Infinity,
             ease: "linear",
             delay: 1,

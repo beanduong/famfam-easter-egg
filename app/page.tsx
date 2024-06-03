@@ -30,7 +30,7 @@ export default function Home() {
       <div className="absolute bottom-8 inset-x-0 flex justify-around">
         <ul className="flex gap-8">
           <li>
-            <NavLink href="/imprint">Imprint</NavLink>
+            <NavLink href="/legal-notice">Legal Notice</NavLink>
           </li>
           <li>
             <NavLink href="/privacy-policy">Privacy Policy</NavLink>
