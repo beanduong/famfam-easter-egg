@@ -4,8 +4,12 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 
-export const CameraController = () => {
-  const positionDefault = useRef(new Vector3(0, 0, 12));
+export const CameraController = ({
+  positionCamera = new Vector3(0, 0, 10),
+}: {
+  positionCamera: Vector3;
+}) => {
+  const positionDefault = useRef(positionCamera);
   const positionTarget = useRef(new Vector3(0, 0, 0));
   const { camera } = useThree();
   const refOrbitControls = useRef<any>(null);
