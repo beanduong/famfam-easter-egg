@@ -5,33 +5,14 @@ import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { CameraController } from "@/components/CameraController";
 import { Vector3 } from "three";
-import { useControls } from "leva";
 
 export default function Home() {
   const positionCamera = new Vector3(0, 0, 10);
-  const { ringSpeed, circleSpeed, dragRotationSpeed, enableZoom } = useControls(
-    {
-      ringSpeed: {
-        value: 0.05,
-        min: 0.0,
-        max: 0.25,
-        step: 0.01,
-      },
-      circleSpeed: {
-        value: 0.5,
-        min: 0.0,
-        max: 2.0,
-        step: 0.01,
-      },
-      dragRotationSpeed: {
-        value: 0.2,
-        min: 0.0,
-        max: 0.5,
-        step: 0.01,
-      },
-      enableZoom: false,
-    }
-  );
+  const ringSpeed = 0.02;
+  const circleSpeed = 0.06;
+  const dragRotationSpeed = 1;
+  const enableZoom = true;
+  const snappingDelay = 2000;
   return (
     <main className="absolute inset-0">
       <div
@@ -52,6 +33,7 @@ export default function Home() {
           positionCamera={positionCamera}
           dragRotationSpeed={dragRotationSpeed}
           enableZoom={enableZoom}
+          snappingDelay={snappingDelay}
         />
         <ambientLight intensity={2.0} />
         <Logo

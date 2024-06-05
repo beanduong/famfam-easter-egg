@@ -8,10 +8,12 @@ export const CameraController = ({
   positionCamera = new Vector3(0, 0, 10),
   dragRotationSpeed = 0.2,
   enableZoom = true,
+  snappingDelay = 2500,
 }: {
   positionCamera: Vector3;
   dragRotationSpeed: number;
   enableZoom: boolean;
+  snappingDelay: number;
 }) => {
   const positionDefault = useRef(positionCamera);
   const positionTarget = useRef(new Vector3(0, 0, 0));
@@ -19,8 +21,17 @@ export const CameraController = ({
   const refOrbitControls = useRef<any>(null);
   const snapping = useRef<boolean>(false);
 
+  const snappingTimer = useRef<any>(null);
+
+  const handleStart = () => {
+    snapping.current = false;
+    clearTimeout(snappingTimer.current);
+  };
+
   const handleEnd = () => {
-    snapping.current = true;
+    snappingTimer.current = setTimeout(() => {
+      snapping.current = true;
+    }, snappingDelay);
   };
 
   useFrame(() => {
@@ -42,6 +53,7 @@ export const CameraController = ({
   return (
     <OrbitControls
       ref={refOrbitControls}
+      onStart={handleStart}
       onEnd={handleEnd}
       enablePan={false}
       enableZoom={enableZoom}
