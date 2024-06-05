@@ -5,9 +5,33 @@ import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { CameraController } from "@/components/CameraController";
 import { Vector3 } from "three";
+import { useControls } from "leva";
 
 export default function Home() {
   const positionCamera = new Vector3(0, 0, 10);
+  const { ringSpeed, circleSpeed, dragRotationSpeed, enableZoom } = useControls(
+    {
+      ringSpeed: {
+        value: 0.05,
+        min: 0.0,
+        max: 0.25,
+        step: 0.01,
+      },
+      circleSpeed: {
+        value: 0.5,
+        min: 0.0,
+        max: 2.0,
+        step: 0.01,
+      },
+      dragRotationSpeed: {
+        value: 0.2,
+        min: 0.0,
+        max: 0.5,
+        step: 0.01,
+      },
+      enableZoom: false,
+    }
+  );
   return (
     <main className="absolute inset-0">
       <div
@@ -24,9 +48,18 @@ export default function Home() {
           far: 1000,
         }}
       >
-        <CameraController positionCamera={positionCamera} />
+        <CameraController
+          positionCamera={positionCamera}
+          dragRotationSpeed={dragRotationSpeed}
+          enableZoom={enableZoom}
+        />
         <ambientLight intensity={2.0} />
-        <Logo radiusRing={4} radiusInner={3.9} />
+        <Logo
+          radiusRing={4}
+          radiusInner={3.9}
+          ringSpeed={ringSpeed}
+          circleSpeed={circleSpeed}
+        />
       </Canvas>
 
       <div className="absolute bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 flex justify-center">

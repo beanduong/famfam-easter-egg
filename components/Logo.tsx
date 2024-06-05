@@ -3,8 +3,14 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion-3d";
+import { useRef } from "react";
 
-export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
+export const Logo = ({
+  radiusRing = 4,
+  radiusInner = 3,
+  ringSpeed = 1,
+  circleSpeed = 1,
+}) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(4, 1);
@@ -12,25 +18,16 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
   const textureMatisse = useTexture("/matisse.png");
   const textureWorld = useTexture("/world.png");
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    textureLogo.offset.x = t * 0.15;
+  const refCircle = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    textureLogo.offset.x += ringSpeed * 0.1;
+    refCircle.current!.rotation.y += circleSpeed * 0.1;
   });
 
   return (
     <group>
-      <motion.group
-        initial={{ rotateY: Math.PI / 2 }}
-        animate={{
-          rotateY: Math.PI * 2 + Math.PI / 2,
-          transition: {
-            duration: 8,
-            repeat: Infinity,
-            ease: "linear",
-            delay: 1,
-          },
-        }}
-      >
+      <group ref={refCircle} rotation={[0, Math.PI / 2, 0]}>
         <mesh>
           <circleGeometry args={[radiusInner, 64]} />
           <meshStandardMaterial
@@ -47,7 +44,7 @@ export const Logo = ({ radiusRing = 4, radiusInner = 3 }) => {
             transparent
           />
         </mesh>
-      </motion.group>
+      </group>
       <motion.mesh
         initial={{ scale: 4 }}
         animate={{

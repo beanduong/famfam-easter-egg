@@ -6,8 +6,12 @@ import { useThree } from "@react-three/fiber";
 
 export const CameraController = ({
   positionCamera = new Vector3(0, 0, 10),
+  dragRotationSpeed = 0.2,
+  enableZoom = true,
 }: {
   positionCamera: Vector3;
+  dragRotationSpeed: number;
+  enableZoom: boolean;
 }) => {
   const positionDefault = useRef(positionCamera);
   const positionTarget = useRef(new Vector3(0, 0, 0));
@@ -40,8 +44,8 @@ export const CameraController = ({
       ref={refOrbitControls}
       onEnd={handleEnd}
       enablePan={false}
-      enableZoom={false}
-      rotateSpeed={0.2}
+      enableZoom={enableZoom}
+      rotateSpeed={dragRotationSpeed}
     />
   );
 };
