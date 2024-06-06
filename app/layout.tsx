@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "FAMFAM",
   description:
-    "FAMFAM's mission is to create a harmonious community where electronic music lovers can thrive together, embodying the essence of a family within a family. Join us to foster a full-circle ecosystem of giving and receiving, underpinned by trust, karma, and the genuine desire to do good.",
+    "FAMFAM is an innovative platform dedicated to music enthusiasts, curating a vibrant blend of music, fashion, and art that embodies the contemporary spirit of our age. Coming soon.",
   authors: [{ name: "FAMFAM" }],
 };
 
