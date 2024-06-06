@@ -1,6 +1,6 @@
 import { TrackballControls } from "@react-three/drei";
 import { Vector3 } from "three";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 
@@ -19,7 +19,7 @@ export const CameraController = ({
 }) => {
   const positionDefault = useRef(positionCamera);
   const positionTarget = useRef(new Vector3(0, 0, 0));
-  const { camera } = useThree();
+  const { camera, gl } = useThree();
   const refControls = useRef<any>(null);
   const snapping = useRef<boolean>(false);
 
@@ -55,8 +55,21 @@ export const CameraController = ({
     }
   });
 
-  // Ensure camera up vector is correct to avoid flipping
   camera.up.set(0, 1, 0);
+
+  useEffect(() => {
+    const handleTouchStart = (event: TouchEvent) => {
+      event.preventDefault();
+    };
+
+    gl.domElement.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+
+    return () => {
+      gl.domElement.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, [gl.domElement]);
 
   return (
     <TrackballControls
