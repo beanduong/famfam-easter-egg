@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei";
+import { TrackballControls } from "@react-three/drei";
 import { Vector3 } from "three";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -9,16 +9,18 @@ export const CameraController = ({
   dragRotationSpeed = 0.2,
   enableZoom = true,
   snappingDelay = 2500,
+  zoomSpeed = 1,
 }: {
   positionCamera: Vector3;
   dragRotationSpeed: number;
   enableZoom: boolean;
   snappingDelay: number;
+  zoomSpeed: number;
 }) => {
   const positionDefault = useRef(positionCamera);
   const positionTarget = useRef(new Vector3(0, 0, 0));
   const { camera } = useThree();
-  const refOrbitControls = useRef<any>(null);
+  const refControls = useRef<any>(null);
   const snapping = useRef<boolean>(false);
 
   const snappingTimer = useRef<any>(null);
@@ -35,29 +37,37 @@ export const CameraController = ({
   };
 
   useFrame(() => {
-    if (refOrbitControls.current && snapping.current) {
+    if (refControls.current && snapping.current) {
       const currentPosition = camera.position;
+      const currentTarget = positionTarget.current;
 
       currentPosition.lerp(positionDefault.current, 0.05);
+      camera.up.lerp(new Vector3(0, 1, 0), 0.05);
+      camera.lookAt(currentTarget);
 
       if (currentPosition.distanceTo(positionDefault.current) < 0.01) {
         currentPosition.copy(positionDefault.current);
         snapping.current = false;
       }
 
-      camera.lookAt(positionTarget.current);
-      refOrbitControls.current.update();
+      camera.updateProjectionMatrix();
+      refControls.current.update();
     }
   });
 
+  // Ensure camera up vector is correct to avoid flipping
+  camera.up.set(0, 1, 0);
+
   return (
-    <OrbitControls
-      ref={refOrbitControls}
+    <TrackballControls
+      ref={refControls}
       onStart={handleStart}
       onEnd={handleEnd}
-      enablePan={false}
-      enableZoom={enableZoom}
+      noPan={true}
+      dynamicDampingFactor={0.1}
+      noZoom={!enableZoom}
       rotateSpeed={dragRotationSpeed}
+      zoomSpeed={zoomSpeed}
     />
   );
 };

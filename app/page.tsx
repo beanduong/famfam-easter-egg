@@ -10,7 +10,8 @@ export default function Home() {
   const positionCamera = new Vector3(0, 0, 10);
   const ringSpeed = 0.02;
   const circleSpeed = 0.06;
-  const dragRotationSpeed = 1;
+  const dragRotationSpeed = 4;
+  const zoomSpeed = 2;
   const enableZoom = true;
   const snappingDelay = 2000;
   return (
@@ -34,6 +35,7 @@ export default function Home() {
           dragRotationSpeed={dragRotationSpeed}
           enableZoom={enableZoom}
           snappingDelay={snappingDelay}
+          zoomSpeed={zoomSpeed}
         />
         <ambientLight intensity={2.0} />
         <Logo
