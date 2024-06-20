@@ -46,7 +46,7 @@ export default function Home() {
         />
       </Canvas>
 
-      <div className="absolute bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 flex justify-center">
+      {/* <div className="absolute bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 flex justify-center">
         <ul className="flex gap-1 md:gap-8 md:flex-row flex-col items-center">
           <li>
             <NavLink href="/legal-notice">Legal Notice</NavLink>
@@ -61,7 +61,7 @@ export default function Home() {
             <NavLink href="mailto:hello@famfam.app">Contact</NavLink>
           </li>
         </ul>
-      </div>
+      </div> */}
     </main>
   );
 }
