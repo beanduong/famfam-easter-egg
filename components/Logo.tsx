@@ -2,14 +2,22 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { motion } from "framer-motion-3d";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { motion as motion3d } from "framer-motion-3d";
+import { useSpring, useTransform, cubicBezier } from "motion/react";
 
 export const Logo = ({
   radiusRing = 4,
   radiusInner = 3,
   ringSpeed = 1,
   circleSpeed = 1,
+  scrollPercentage,
+}: {
+  radiusRing?: number;
+  radiusInner?: number;
+  ringSpeed?: number;
+  circleSpeed?: number;
+  scrollPercentage?: any;
 }) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
@@ -20,13 +28,26 @@ export const Logo = ({
 
   const refCircle = useRef<THREE.Group>(null);
 
+  const motionScrollPercentage = useSpring(scrollPercentage, {
+    stiffness: 100,
+    damping: 30,
+  });
+  const y = useTransform(motionScrollPercentage, [0, 1], [-10.5, 0]);
+  const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
+    ease: cubicBezier(0.55, 0.06, 0.68, 0.19),
+  });
+
+  useEffect(() => {
+    motionScrollPercentage.set(scrollPercentage);
+  }, [scrollPercentage, motionScrollPercentage]);
+
   useFrame(() => {
     textureLogo.offset.x += ringSpeed * 0.1;
     refCircle.current!.rotation.y += circleSpeed * 0.1;
   });
 
   return (
-    <group>
+    <motion3d.group position-y={y} scale={scale}>
       <group ref={refCircle} rotation={[0, Math.PI / 2, 0]}>
         <mesh>
           <circleGeometry args={[radiusInner, 64]} />
@@ -45,12 +66,7 @@ export const Logo = ({
           />
         </mesh>
       </group>
-      <motion.mesh
-        initial={{ scale: 4 }}
-        animate={{
-          scale: 1,
-          transition: { duration: 2, ease: [0, 0.65, 0, 1] },
-        }}
+      <mesh
         rotation={[
           THREE.MathUtils.degToRad(16),
           0,
@@ -58,14 +74,12 @@ export const Logo = ({
         ]}
       >
         <cylinderGeometry args={[radiusRing, radiusRing, 1, 64, 1, true]} />
-        <motion.meshStandardMaterial
+        <meshStandardMaterial
           map={textureLogo}
           side={THREE.DoubleSide}
           transparent
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 2, delay: 0.5 } }}
         />
-      </motion.mesh>
-    </group>
+      </mesh>
+    </motion3d.group>
   );
 };
