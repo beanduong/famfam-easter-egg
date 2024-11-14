@@ -29,8 +29,9 @@ export const Logo = ({
   const refCircle = useRef<THREE.Group>(null);
 
   const motionScrollPercentage = useSpring(scrollPercentage, {
-    stiffness: 100,
-    damping: 30,
+    mass: 0.1,
+    stiffness: 200,
+    damping: 10,
   });
   const y = useTransform(motionScrollPercentage, [0, 1], [-10.5, 0]);
   const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
