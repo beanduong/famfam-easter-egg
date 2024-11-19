@@ -35,8 +35,7 @@ export const Logo = ({
     stiffness: 50,
     damping: 10,
   });
-  // const motionScrollPercentage = useMotionValue(scrollPercentage);
-  const y = useTransform(motionScrollPercentage, [0, 1], [7, 0]);
+  const y = useTransform(motionScrollPercentage, [0, 1], [8, 0]);
   const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
     ease: cubicBezier(0.55, 0.06, 0.68, 0.19),
   });
@@ -51,7 +50,7 @@ export const Logo = ({
   });
 
   return (
-    <motion3d.group position-y={isFixed ? 3 : y} scale={isFixed ? 1 : scale}>
+    <motion3d.group position-y={isFixed ? 0 : y} scale={isFixed ? 1 : scale}>
       <group ref={refCircle} rotation={[0, Math.PI / 2, 0]}>
         <mesh>
           <circleGeometry args={[radiusInner, 64]} />

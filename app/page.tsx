@@ -2,24 +2,22 @@
 
 "use client";
 
-import { extend } from "@react-three/fiber";
+import { Canvas, extend } from "@react-three/fiber";
 import { Logo } from "@/components/Logo";
 import * as THREE from "three";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { MotionCanvas } from "framer-motion-3d";
-import { OrthographicCamera, TrackballControls } from "@react-three/drei";
+import { Bounds, OrthographicCamera } from "@react-three/drei";
 import { CameraController } from "@/components/CameraController";
+import useMeasure from "react-use-measure";
 
 export default function Home() {
   const ringSpeed = 0.02;
   const circleSpeed = 0.06;
 
-  const mobileSize = { width: 375, height: 812 };
-  const canvasHeight = 812 * 0.75;
-
-  const refScrollArea = useRef<HTMLDivElement>(null);
   const refMobile = useRef<HTMLDivElement>(null);
+  const [refViewport, viewportBounds] = useMeasure();
 
   const { scrollY } = useScroll({
     container: refMobile,
@@ -30,42 +28,20 @@ export default function Home() {
   useMemo(() => extend(THREE), []);
 
   useLayoutEffect(() => {
-    refMobile.current?.scrollTo(0, canvasHeight);
-  }, [canvasHeight]);
+    refMobile.current?.scrollTo(0, viewportBounds.height * 0.75);
+  }, [viewportBounds.height]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const percentage = ((latest - canvasHeight) * -1) / canvasHeight;
+    const percentage = (latest / (viewportBounds.height * 0.75)) * -1 + 1;
     setScrollPercentage(percentage);
+    console.log(percentage);
   });
 
   return (
     <main className="absolute inset-0 flex justify-center items-center bg-neutral-200">
-      <div className="absolute inset-x-0 top-2 flex justify-center">
-        <div className="flex gap-4">
-          <button
-            className={!isFixed ? "underline" : ""}
-            onClick={() => {
-              setIsFixed(true);
-            }}
-          >
-            fixed
-          </button>
-          <button
-            className={isFixed ? "underline" : ""}
-            onClick={() => {
-              setIsFixed(false);
-            }}
-          >
-            scroll
-          </button>
-        </div>
-      </div>
       <div
+        ref={refViewport}
         className={`relative flex flex-col w-full h-full bg-white overflow-hidden`}
-        style={{
-          maxHeight: mobileSize.height,
-          maxWidth: mobileSize.width,
-        }}
       >
         <div className="absolute top-0 inset-x-0 z-50">
           <img src="/status-bar.png" alt="status bar" />
@@ -73,10 +49,10 @@ export default function Home() {
         <div
           className="absolute inset-x-0 top-0 z-10"
           style={{
-            height: canvasHeight,
+            height: viewportBounds.height * 0.75,
           }}
         >
-          <MotionCanvas>
+          <Canvas>
             <OrthographicCamera makeDefault position={[0, 0, 100]} zoom={40} />
             <CameraController
               positionCamera={new THREE.Vector3(0, 0, 10)}
@@ -94,7 +70,7 @@ export default function Home() {
               ringSpeed={ringSpeed}
               circleSpeed={circleSpeed}
             />
-          </MotionCanvas>
+          </Canvas>
         </div>
         <div
           ref={refMobile}
@@ -103,14 +79,18 @@ export default function Home() {
         >
           <div
             className="pointer-events-none"
-            ref={refScrollArea}
             style={{
-              height: canvasHeight,
+              height: viewportBounds.height * 0.75,
             }}
           />
           <img className="pointer-events-auto" src="/start.png" alt="start" />
         </div>
-        <div className="absolute bottom-0 inset-x-0 bg-red z-50">
+        <div
+          className="absolute bottom-0 inset-x-0 bg-red z-50"
+          onClick={() => {
+            setIsFixed((prev) => !prev);
+          }}
+        >
           <img src="/navigation.png" alt="navigation" />
         </div>
       </div>
