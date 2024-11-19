@@ -12,12 +12,14 @@ export const Logo = ({
   ringSpeed = 1,
   circleSpeed = 1,
   scrollPercentage,
+  isFixed = false,
 }: {
   radiusRing?: number;
   radiusInner?: number;
   ringSpeed?: number;
   circleSpeed?: number;
   scrollPercentage?: any;
+  isFixed?: boolean;
 }) => {
   const textureLogo = useTexture("/famfam.png", (texture) => {
     texture.wrapS = THREE.RepeatWrapping;
@@ -29,11 +31,12 @@ export const Logo = ({
   const refCircle = useRef<THREE.Group>(null);
 
   const motionScrollPercentage = useSpring(scrollPercentage, {
-    mass: 0.1,
-    stiffness: 200,
+    mass: 0.5,
+    stiffness: 50,
     damping: 10,
   });
-  const y = useTransform(motionScrollPercentage, [0, 1], [-10.5, 0]);
+  // const motionScrollPercentage = useMotionValue(scrollPercentage);
+  const y = useTransform(motionScrollPercentage, [0, 1], [9.5, 0]);
   const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
     ease: cubicBezier(0.55, 0.06, 0.68, 0.19),
   });
@@ -48,7 +51,7 @@ export const Logo = ({
   });
 
   return (
-    <motion3d.group position-y={y} scale={scale}>
+    <motion3d.group position-y={isFixed ? 3 : y} scale={isFixed ? 1 : scale}>
       <group ref={refCircle} rotation={[0, Math.PI / 2, 0]}>
         <mesh>
           <circleGeometry args={[radiusInner, 64]} />
