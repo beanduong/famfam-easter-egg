@@ -34,7 +34,6 @@ export default function Home() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const percentage = (latest / (viewportBounds.height * 0.75)) * -1 + 1;
     setScrollPercentage(percentage);
-    console.log(percentage);
   });
 
   return (
@@ -56,7 +55,7 @@ export default function Home() {
             <OrthographicCamera makeDefault position={[0, 0, 100]} zoom={40} />
             <CameraController
               positionCamera={new THREE.Vector3(0, 0, 10)}
-              dragRotationSpeed={0.2}
+              dragRotationSpeed={0.6}
               enableZoom={false}
               snappingDelay={2500}
               zoomSpeed={1}
