@@ -8,15 +8,15 @@ import * as THREE from "three";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { MotionCanvas } from "framer-motion-3d";
-import { OrthographicCamera } from "@react-three/drei";
-import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
+import { OrthographicCamera, TrackballControls } from "@react-three/drei";
+import { CameraController } from "@/components/CameraController";
 
 export default function Home() {
   const ringSpeed = 0.02;
   const circleSpeed = 0.06;
 
   const mobileSize = { width: 375, height: 812 };
-  const canvasHeight = 812;
+  const canvasHeight = 812 * 0.75;
 
   const refScrollArea = useRef<HTMLDivElement>(null);
   const refMobile = useRef<HTMLDivElement>(null);
@@ -61,14 +61,30 @@ export default function Home() {
         </div>
       </div>
       <div
-        className={`relative flex flex-col w-full h-full max-w-[${mobileSize.width}px] max-h-[${mobileSize.height}px] bg-white rounded-md overflow-hidden`}
+        className={`relative flex flex-col w-full h-full bg-white overflow-hidden`}
+        style={{
+          maxHeight: mobileSize.height,
+          maxWidth: mobileSize.width,
+        }}
       >
         <div className="absolute top-0 inset-x-0 z-50">
           <img src="/status-bar.png" alt="status bar" />
         </div>
-        <div className="absolute inset-0 pointer-events-none z-10">
+        <div
+          className="absolute inset-x-0 top-0 z-10"
+          style={{
+            height: canvasHeight,
+          }}
+        >
           <MotionCanvas>
             <OrthographicCamera makeDefault position={[0, 0, 100]} zoom={40} />
+            <CameraController
+              positionCamera={new THREE.Vector3(0, 0, 10)}
+              dragRotationSpeed={0.2}
+              enableZoom={false}
+              snappingDelay={2500}
+              zoomSpeed={1}
+            />
             <ambientLight intensity={2.0} />
             <Logo
               scrollPercentage={scrollPercentage}
@@ -82,17 +98,17 @@ export default function Home() {
         </div>
         <div
           ref={refMobile}
-          className="bg-transparent overflow-auto pb-16 z-10"
+          className="bg-transparent pointer-events-none overflow-auto pb-16 z-10"
           data-hide-scrollbar
         >
           <div
-            className="bg-transparent"
+            className="pointer-events-none"
             ref={refScrollArea}
             style={{
               height: canvasHeight,
             }}
           />
-          <img src="/start.png" alt="start" />
+          <img className="pointer-events-auto" src="/start.png" alt="start" />
         </div>
         <div className="absolute bottom-0 inset-x-0 bg-red z-50">
           <img src="/navigation.png" alt="navigation" />

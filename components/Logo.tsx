@@ -36,7 +36,7 @@ export const Logo = ({
     damping: 10,
   });
   // const motionScrollPercentage = useMotionValue(scrollPercentage);
-  const y = useTransform(motionScrollPercentage, [0, 1], [9.5, 0]);
+  const y = useTransform(motionScrollPercentage, [0, 1], [7, 0]);
   const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
     ease: cubicBezier(0.55, 0.06, 0.68, 0.19),
   });
