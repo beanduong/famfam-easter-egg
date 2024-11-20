@@ -65,7 +65,7 @@ export default function Home() {
               />
               <CameraController
                 positionCamera={new THREE.Vector3(0, 0, 10)}
-                dragRotationSpeed={0.6}
+                dragRotationSpeed={1}
                 enableZoom={false}
                 snappingDelay={2500}
                 zoomSpeed={1}
