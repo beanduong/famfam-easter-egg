@@ -17,6 +17,7 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-full-screen": "^1.1.1",
     "react-use-measure": "^2.1.1",
     "three": "^0.170.0"
   },
