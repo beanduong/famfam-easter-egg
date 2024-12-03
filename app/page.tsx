@@ -19,7 +19,7 @@ export default function Home() {
   const refHome = useRef<HTMLImageElement>(null);
 
   const { height: windowHeight } = useWindowSize();
-  const [height, setHeight] = useState<number | null>(0);
+  const [height, setHeight] = useState<number | null>(null);
 
   const { scrollY } = useScroll();
   const [scrollPercentage, setScrollPercentage] = useState<number>(1);
@@ -28,12 +28,8 @@ export default function Home() {
   useMemo(() => extend(THREE), []);
 
   useEffect(() => {
-    if (windowHeight) setHeight(windowHeight);
-  }, [windowHeight]);
-
-  useEffect(() => {
-    console.log(height);
-  }, [height]);
+    if (windowHeight && height === null) setHeight(windowHeight);
+  }, [height, windowHeight]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (height) {
