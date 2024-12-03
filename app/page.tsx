@@ -17,7 +17,7 @@ export default function Home() {
   const refMain = useRef<HTMLDivElement>(null);
   const refHome = useRef<HTMLImageElement>(null);
 
-  const { scrollY } = useScroll({ container: refMain });
+  const { scrollY } = useScroll();
   const [scrollPercentage, setScrollPercentage] = useState<number>(1);
   const [isFixed, setIsFixed] = useState<boolean>(false);
 
