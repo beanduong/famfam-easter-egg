@@ -12,6 +12,7 @@
     "@react-three/drei": "^9.116.0",
     "@react-three/fiber": "^8.17.10",
     "@types/three": "^0.170.0",
+    "@uidotdev/usehooks": "^2.4.1",
     "framer-motion-3d": "^11.11.15",
     "motion": "^11.11.15",
     "next": "14.2.3",
