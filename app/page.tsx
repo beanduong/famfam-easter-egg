@@ -17,24 +17,34 @@ export default function Home() {
   const refMain = useRef<HTMLDivElement>(null);
   const refHome = useRef<HTMLImageElement>(null);
 
-  const { scrollY } = useScroll();
+  const { scrollY } = useScroll({
+    container: refMain,
+  });
   const [scrollPercentage, setScrollPercentage] = useState<number>(1);
+  const [shouldScroll, setShouldScroll] = useState<boolean>(true);
+
   const [isFixed, setIsFixed] = useState<boolean>(false);
 
   useMemo(() => extend(THREE), []);
 
-  useEffect(() => {
-    refMain.current?.scrollTo(0, window.innerHeight * 0.75);
-  }, []);
-
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const percentage = (latest / (window.innerHeight * 0.75)) * -1 + 1;
+    const percentage = (latest / (window.innerHeight * 0.7)) * -1 + 1;
     setScrollPercentage(percentage);
+    if (refHome.current) {
+      if (refHome.current.getBoundingClientRect().top < -10) {
+        setShouldScroll(false);
+      } else {
+        setShouldScroll(true);
+      }
+    }
   });
 
   return (
-    <main ref={refMain} className="min-h-screen w-screen relative">
-      <div className="fixed top-0 inset-x-0 h-[75vh] -z-10">
+    <main
+      ref={refMain}
+      className="h-screen w-screen relative snap-mandatory snap-y overflow-y-scroll scroll-smooth"
+    >
+      <div className="fixed top-0 inset-x-0 h-[70vh] -z-10">
         <Canvas>
           <OrthographicCamera makeDefault position={[0, 0, 100]} zoom={40} />
           <CameraController
@@ -55,11 +65,20 @@ export default function Home() {
           />
         </Canvas>
       </div>
-      <div className="z-20 w-full mt-[75vh]">
-        <img ref={refHome} src="/start.png" alt="start" />
-      </div>
+      <section
+        className={`w-full h-[70vh] ${
+          shouldScroll ? "snap-start snap-always" : ""
+        }`}
+      />
+      <section
+        className={`w-full h-fit z-20 ${
+          shouldScroll ? "snap-start snap-always" : ""
+        }`}
+      >
+        <img ref={refHome} src="/start.png" alt="start" className="w-full" />
+      </section>
       <div
-        className="fixed bottom-0 inset-x-0 bg-red z-50"
+        className="fixed bottom-0 inset-x-0 z-50"
         onClick={() => {
           setIsFixed((prev) => !prev);
         }}

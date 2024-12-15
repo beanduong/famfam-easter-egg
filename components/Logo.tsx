@@ -35,7 +35,7 @@ export const Logo = ({
     stiffness: 50,
     damping: 10,
   });
-  const y = useTransform(motionScrollPercentage, [0, 1], [8, 0]);
+  const y = useTransform(motionScrollPercentage, [0, 1], [7, 0]);
   const scale = useTransform(motionScrollPercentage, [0, 1], [0.2, 1], {
     ease: cubicBezier(0.55, 0.06, 0.68, 0.19),
   });
