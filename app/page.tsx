@@ -23,7 +23,7 @@ export default function Home() {
   const [scrollPercentage, setScrollPercentage] = useState<number>(1);
   const [shouldScroll, setShouldScroll] = useState<boolean>(true);
 
-  const [isFixed, setIsFixed] = useState<boolean>(false);
+  const [isFixed, setIsFixed] = useState<boolean>(true);
 
   useMemo(() => extend(THREE), []);
 
